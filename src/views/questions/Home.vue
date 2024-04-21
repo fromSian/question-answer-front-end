@@ -1,7 +1,7 @@
 <template lang="">
   <div>
-    <TagsVue></TagsVue>
-    <List></List>
+    <TagsVue @clickTag="filterList"></TagsVue>
+    <List :currentTag="currentTag"></List>
   </div>
 </template>
 <script>
@@ -10,8 +10,16 @@ import TagsVue from "./Tags.vue";
 export default {
   name: "Home",
   components: { TagsVue, List },
-  mounted() {
-    console.log(this.$route.query);
+  data() {
+    return {
+      currentTag: "",
+    };
+  },
+  mounted() {},
+  methods: {
+    filterList(curTag) {
+      this.currentTag = curTag;
+    },
   },
 };
 </script>

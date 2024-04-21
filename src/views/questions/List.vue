@@ -1,77 +1,88 @@
-<template lang="">
-  <div class="list">
-    <div
-      class="list_item"
-      v-for="item in items"
-      @click="() => handleDetail(item.id)"
-    >
-      <h2>{{ item.title }}</h2>
-      <span
-        @click="
-          (e) => {
-            e.stopPropagation();
-            handleUser(123);
-          }
-        "
-        >{{ item.username }}</span
+<template>
+  <div>
+    <template v-for="item in questions">
+      <el-card
+        v-if="currentTag === '全部' || currentTag && item?.tag_list?.includes(currentTag)"
+        :key="item.id"
+        @click="handleDetail(item.id)"
+        class="question_item"
       >
-      <span>评论数{{ item.comment }}</span>
-      <div class="tags">
-        <el-tag v-for="tag in item.tags" size="small">{{ tag }}</el-tag>
-      </div>
-    </div>
+        <el-row>
+          <el-col :span="6">
+            <div class="question-title">{{ item.title }}</div>
+          </el-col>
+          <el-col :span="6">
+            <el-avatar @click.native="showUserDetail($event, item.author.id)">
+              {{ item.author.username }}
+            </el-avatar>
+          </el-col>
+          <el-col :span="6">
+            <span>评论数：{{ item.comment_counts }}</span>
+          </el-col>
+          <el-col :span="6">
+            <el-tag
+              v-for="(tag, index) in item.tag_list"
+              :key="index"
+              style="margin-left: 8px"
+              >{{ tag }}</el-tag
+            >
+          </el-col>
+        </el-row>
+      </el-card>
+    </template>
   </div>
 </template>
 <script>
+import request from "@/utils/request";
 export default {
   name: "List",
+  props: {
+    currentTag: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
-      items: [
-        {
-          id: 123,
-          title: "标题",
-          username: "发布用户名",
-          like: 2,
-          comment: 4,
-          tags: ["标签1", "标签2"],
-        },
-        {
-          id: 123,
-          title: "标题",
-          username: "发布用户名",
-          like: 2,
-          comment: 4,
-          tags: ["标签1", "标签2"],
-        },
-      ],
+      questions: [],
     };
   },
+  mounted() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      request
+        .get("/article/")
+        .then((result) => {
+          this.questions = result?.data?.results || [];
+        })
+        .catch((err) => {});
+    },
     handleDetail(id) {
       this.$router.push({ path: `/questions/${id}` });
     },
-    handleUser(id) {
+    showUserDetail(ev, id) {
+      ev.stopPropagation();
       this.$router.push({ path: `/userinfo/${id}` });
     },
   },
 };
 </script>
 <style scoped lang="less">
-.list {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-
-  .list_item {
-    background: rgb(156, 164, 169);
-    border-radius: 4px;
-    height: 96px;
+.question_item {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  .el-row {
     width: 100%;
-    padding: 16px;
-    cursor: pointer;
+  }
+  :deep(.el-card__body) {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
   }
 }

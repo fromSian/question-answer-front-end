@@ -1,30 +1,42 @@
-<template lang="">
+<template>
   <div class="tags">
-    <el-tag
-      v-for="item in items"
-      :key="item.label"
-      :type="item.type"
-      effect="plain"
-      class="tag"
-    >
-      {{ item.label }}
-    </el-tag>
+    <el-radio-group v-model="curTag">
+      <el-radio-button label="全部"></el-radio-button>
+      <el-radio-button v-for="tag in tags" :key="tag" :label="tag">
+      </el-radio-button>
+    </el-radio-group>
   </div>
 </template>
 <script>
+import request from "@/utils/request";
 export default {
   name: "Tags",
   data() {
     return {
-      items: [
-        { type: "info", label: "全选" },
-        { type: "info", label: "标签一" },
-        { type: "info", label: "标签二" },
-        { type: "info", label: "标签三" },
-        { type: "info", label: "标签四" },
-        { type: "info", label: "标签五" },
-      ],
+      tags: [],
+      curTag: '全部'
     };
+  },
+  watch: {
+    curTag: {
+      handler() {
+        this.$emit("clickTag", this.curTag);
+      },
+      immediate: true,
+    },
+  },
+  mounted() {
+    this.getTags();
+  },
+  methods: {
+    getTags() {
+      request
+        .get("/tags/")
+        .then((result) => {
+          this.tags = result?.data?.tags || [];
+        })
+        .catch((err) => {});
+    },
   },
 };
 </script>
