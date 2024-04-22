@@ -4,7 +4,7 @@
       <el-card
         v-if="currentTag === '全部' || currentTag && item?.tag_list?.includes(currentTag)"
         :key="item.id"
-        @click="handleDetail(item.id)"
+        @click.native="handleDetail(item.id)"
         class="question_item"
       >
         <el-row>
