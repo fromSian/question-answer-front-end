@@ -19,8 +19,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less">
 .container {
   min-height: calc(100vh - 100px);
+}
+
+.pagination {
+  position: absolute;
+  bottom: 0;
+  right: 16px;
+}
+
+.el-popconfirm__main {
+  margin-bottom: 8px;
 }
 </style>

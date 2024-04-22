@@ -107,14 +107,14 @@ export default {
   },
   mounted() {
     if (localStorage.getItem('token')) {
+      let cVue = this
       request.get("/user/info/").then((res) => {
         if (res && res.data && res.data.status) {
-          this.$store.commit("/user/SET_USER_STATE", {
+          cVue.$store.commit("user/SET_USER_STATE", {
             id: res.data.id,
             username: res.data.username,
             coins: res.data.coins,
           });
-          console.log(res.data.username)
         }
       });
     }

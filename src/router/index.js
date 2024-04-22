@@ -39,7 +39,7 @@ const routes = [
     name: "userinfo",
     path: "/userinfo/:id",
     component: () => import("@/views/user/UserInfo"),
-    meta: { title: "用户信息" },
+    meta: { title: "用户信息", requireAuth: true },
   },
   {
     path: "/404",
