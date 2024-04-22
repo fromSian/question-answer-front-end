@@ -114,18 +114,16 @@ export default {
           request
             .post("/article/", this.ruleForm)
             .then((res) => {
-              if (res && res.data) {
+              if (res && res.status !== 400) {
                 this.loading = false;
                 this.$message.success("发布成功");
-                this.resetForm('ruleForm')
-              } else {
-                throw new Error("publish failed");
+                this.resetForm("ruleForm");
               }
             })
             .catch((err) => {
-              console.log(err);
+              console.log(12312, err, err.message);
               this.loading = false;
-              this.$message.error("发布失败");
+              this.$message.error("发布失败, 本月发布次数已用完或没有足够金币");
             });
         } else {
           return false;

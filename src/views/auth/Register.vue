@@ -94,19 +94,24 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      let cVue = this
+      let cVue = this;
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           cVue.loading = true;
-          const res = await request.post("/user/register/", {username: cVue.ruleForm.username, password: cVue.ruleForm.password});
+          const res = await request.post("/user/register/", {
+            username: cVue.ruleForm.username,
+            password: cVue.ruleForm.password,
+          });
           if (res && res.data.status) {
             cVue.$message.success("注册成功");
             setTimeout(() => {
               cVue.loading = false;
               cVue.$router.push({ path: cVue.redirect || "/login" });
             }, 0.1 * 1000);
+            cVue.loading = false;
           } else {
-            cVue.$message.error("注册失败，" + message);
+            cVue.loading = false;
+            cVue.$message.error("注册失败");
           }
         } else {
           return false;

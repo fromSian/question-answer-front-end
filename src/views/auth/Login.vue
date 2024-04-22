@@ -75,26 +75,33 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      let cVue = this
+      let cVue = this;
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           cVue.loading = true;
-          const res = await request.post("/user/login/", this.ruleForm);
-          if (res && res.data.status) {
-            cVue.$message.success("登录成功");
-            cVue.$store.commit("user/SET_USER_STATE", {
-              id: res.data.id,
-              username: res.data.username,
-              coins: res.data.coins,
-            });
-            cVue.$store.commit("user/SET_TOKEN_STATE", res.data.token);
-            setToken(res.data.token);
-            setTimeout(() => {
+          try {
+            const res = await request.post("/user/login/", this.ruleForm);
+            if (res && res.data.status) {
+              cVue.$message.success("登录成功");
+              cVue.$store.commit("user/SET_USER_STATE", {
+                id: res.data.id,
+                username: res.data.username,
+                coins: res.data.coins,
+              });
+              cVue.$store.commit("user/SET_TOKEN_STATE", res.data.token);
+              setToken(res.data.token);
+              setTimeout(() => {
+                cVue.loading = false;
+                cVue.$router.push({ path: this.redirect || "/" });
+              }, 0.1 * 1000);
               cVue.loading = false;
-              cVue.$router.push({ path: this.redirect || "/" });
-            }, 0.1 * 1000);
-          } else {
-            cVue.$message.error("登录失败，" + message);
+            } else {
+              cVue.loading = false;
+              cVue.$message.error("登录失败");
+            }
+          } catch (err) {
+            cVue.loading = false;
+            this.$message.error("登录失败");
           }
         } else {
           return false;
