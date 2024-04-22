@@ -45,6 +45,16 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="有效期" prop="expired">
+          <el-date-picker
+            v-model="ruleForm.expired"
+            style="width: 100%"
+            type="datetime"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')"
             >提交</el-button
@@ -57,30 +67,19 @@
 </template>
 
 <script>
+import request from "@/utils/request";
 export default {
   name: "Publish",
   data() {
     return {
       redirect: undefined,
       loading: false,
-      options: [
-        {
-          value: "HTML",
-          label: "HTML",
-        },
-        {
-          value: "CSS",
-          label: "CSS",
-        },
-        {
-          value: "JavaScript",
-          label: "JavaScript",
-        },
-      ],
+      options: [],
       ruleForm: {
         title: "",
         content: "",
         tags: [],
+        expired: null,
       },
       rules: {
         title: [
@@ -101,6 +100,9 @@ export default {
           },
         ],
         tags: [{ required: false, message: "请选择标签", trigger: "blur" }],
+        expired: [
+          { required: false, message: "请选择有效期", trigger: "blur" },
+        ],
       },
     };
   },
@@ -109,22 +111,21 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.$store
-            .dispatch("user/login", this.ruleForm)
-            .then(() => {
-              this.$message({
-                message: "恭喜你，登录成功",
-                type: "success",
-                duration: 2000,
-              });
-
-              setTimeout(() => {
+          request
+            .post("/article/", this.ruleForm)
+            .then((res) => {
+              if (res && res.data) {
                 this.loading = false;
-                this.$router.push({ path: this.redirect || "/" });
-              }, 0.1 * 1000);
+                this.$message.success("发布成功");
+                this.resetForm('ruleForm')
+              } else {
+                throw new Error("publish failed");
+              }
             })
-            .catch(() => {
+            .catch((err) => {
+              console.log(err);
               this.loading = false;
+              this.$message.error("发布失败");
             });
         } else {
           return false;
@@ -134,6 +135,22 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    queryTags() {
+      request
+        .get("/tags/")
+        .then((result) => {
+          if (result && result.data && result.data.status) {
+            this.options = result.data.tags.map((item) => ({
+              label: item,
+              value: item,
+            }));
+          }
+        })
+        .catch((err) => {});
+    },
+  },
+  mounted() {
+    this.queryTags();
   },
 };
 </script>
