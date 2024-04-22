@@ -12,7 +12,7 @@
             <div class="question-title">{{ item.title }}</div>
           </el-col>
           <el-col :span="6">
-            <el-avatar @click.native="showUserDetail($event, item.author.id)">
+            <el-avatar>
               {{ item.author.username }}
             </el-avatar>
           </el-col>
