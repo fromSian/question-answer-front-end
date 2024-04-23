@@ -29,14 +29,48 @@
                 {{ data.article.title }}
               </p>
 
-              <el-tooltip v-else :content="data.title" placement="top">
+              <el-tooltip
+                v-if="current == '0'"
+                :content="data.title"
+                placement="top"
+              >
                 <p @click="handleArticleGo(data.id)" style="cursor: pointer">
                   {{ data.title }}
                 </p>
               </el-tooltip>
+
+              <el-tooltip v-else :content="data.article.title" placement="top">
+                <p
+                  @click="handleArticleGo(data.article.id)"
+                  style="cursor: pointer"
+                >
+                  {{ data.article.title }}
+                </p>
+              </el-tooltip>
             </div>
 
+            <div class="detail_content_item_status" v-if="current == '2'">
+              <i
+                :class="
+                  data.denounce_status == 0
+                    ? 'el-icon-question'
+                    : data.denounce_status == 1
+                    ? 'el-icon-success'
+                    : 'el-icon-error'
+                "
+              ></i>
+              <p>
+                {{
+                  data.denounce_status == 0
+                    ? "审核中"
+                    : data.denounce_status == 1
+                    ? "通过"
+                    : "拒绝"
+                }}
+              </p>
+            </div>
             <el-popconfirm
+              v-else
               position="top"
               title="确定删除吗？"
               confirm-button-text="确认"
@@ -93,6 +127,10 @@ export default {
           key: "1",
           name: "我的回答",
         },
+        {
+          key: "2",
+          name: "我的举报",
+        },
       ],
       datas: [],
       total: 0,
@@ -114,9 +152,9 @@ export default {
     queryData(type = "0", page = 1) {
       request
         .get(
-          `/${type == "0" ? "article" : "comment"}/mine/?page=${page}&size=${
-            this.size
-          }`
+          `/${
+            type == "0" ? "article" : type == "1" ? "comment" : "denounce"
+          }/mine/?page=${page}&size=${this.size}`
         )
         .then((res) => {
           if (res && res.data) {
@@ -126,6 +164,9 @@ export default {
         });
     },
     handleDelete(type, id) {
+      if (type === "2") {
+        return;
+      }
       request
         .delete(`/${type == "0" ? "article" : "comment"}/${id}/`)
         .then((res) => {
@@ -213,6 +254,21 @@ export default {
           cursor: pointer;
           color: gray;
           font-size: 12px;
+        }
+      }
+      .detail_content_item_status {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+
+        > i {
+          font-size: 24px;
+        }
+        > p {
+          color: gray;
+          font-size: 14px;
         }
       }
       &:not(:first-child) {
