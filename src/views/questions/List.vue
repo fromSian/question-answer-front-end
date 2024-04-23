@@ -2,7 +2,10 @@
   <div>
     <template v-for="item in questions">
       <el-card
-        v-if="currentTag === '全部' || currentTag && item?.tag_list?.includes(currentTag)"
+        v-if="
+          currentTag === '全部' ||
+          (currentTag && item?.tag_list?.includes(currentTag))
+        "
         :key="item.id"
         @click.native="handleDetail(item.id)"
         class="question_item"
@@ -10,6 +13,7 @@
         <el-row>
           <el-col :span="6">
             <div class="question-title">{{ item.title }}</div>
+            <div>发布时间</div>
           </el-col>
           <el-col :span="6">
             <el-avatar>

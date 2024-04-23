@@ -6,6 +6,8 @@
         <div class="detail_header">
           <h1>{{ info.title }}</h1>
           <p>{{ info.username }}</p>
+          <p>发布时间</p>
+          <el-button>举报</el-button>
         </div>
         <div class="detail_content">{{ info.content }}</div>
       </div>

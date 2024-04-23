@@ -2,8 +2,11 @@
   <div class="comments">
     <p>评论详情</p>
     <div class="comment" v-for="comment in comments">
-      <div>{{ comment.username }}</div>
       <div>{{ comment.content }}</div>
+      <div>{{ comment.username }}</div>
+      <div>评论时间</div>
+      <div>是否为优秀作答</div>
+      <el-button>设置为优秀作答</el-button>
     </div>
   </div>
 </template>
