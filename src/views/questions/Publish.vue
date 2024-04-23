@@ -121,7 +121,6 @@ export default {
               }
             })
             .catch((err) => {
-              console.log(12312, err, err.message);
               this.loading = false;
               this.$message.error("发布失败, 本月发布次数已用完或没有足够金币");
             });

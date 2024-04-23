@@ -120,7 +120,6 @@ export default {
         )
         .then((res) => {
           if (res && res.data) {
-            console.log(res.data);
             this.total = res.data.count;
             this.datas = res.data.results;
           }
