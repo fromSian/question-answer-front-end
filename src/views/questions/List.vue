@@ -13,7 +13,6 @@
         <el-row>
           <el-col :span="6">
             <div class="question-title">{{ item.title }}</div>
-            <div>发布时间</div>
           </el-col>
           <el-col :span="6">
             <span :title="item.author.username">
@@ -30,6 +29,14 @@
               style="margin-left: 8px"
               >{{ tag }}
             </el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <div>发布于{{ item.created }}</div>
+          </el-col>
+          <el-col :span="12">
+            <div>过期时间{{ item.expired }}</div>
           </el-col>
         </el-row>
       </el-card>
