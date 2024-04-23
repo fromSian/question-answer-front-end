@@ -16,9 +16,9 @@
             <div>发布时间</div>
           </el-col>
           <el-col :span="6">
-            <el-avatar>
+            <span :title="item.author.username">
               {{ item.author.username }}
-            </el-avatar>
+            </span>
           </el-col>
           <el-col :span="6">
             <span>评论数：{{ item.comment_counts }}</span>
@@ -28,8 +28,8 @@
               v-for="(tag, index) in item.tag_list"
               :key="index"
               style="margin-left: 8px"
-              >{{ tag }}</el-tag
-            >
+              >{{ tag }}
+            </el-tag>
           </el-col>
         </el-row>
       </el-card>
