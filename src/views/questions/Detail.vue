@@ -6,32 +6,40 @@
         <div class="detail_header" slot="header">
           <div>
             <div class="title">{{ info.title }}</div>
-            <span class="questioner">{{ info.author.username }}</span>
+            <span class="questioner">{{ info.author?.username }}</span>
             <span class="create-time">提问于 {{ info.created }}</span>
           </div>
-          <el-button plain size="small">举报</el-button>
+          <el-button type="danger" size="small">举报</el-button>
         </div>
         <div class="detail_content">{{ info.content }}</div>
       </el-card>
       <div class="operation">
         <el-input
           type="textarea"
-          :rows="2"
+          :rows="3"
           placeholder="请输入评论内容"
           v-model="commentToSubmit"
         >
         </el-input>
-        <el-button type="primary" @click="submitComment" size="small"
+        <el-button
+          type="primary"
+          @click="submitComment"
+          size='small'
+          style="margin-right: 16px"
           >评论</el-button
         >
       </div>
-      <Comment :questionInfo="info"></Comment>
+      <Comment
+        :questionInfo="info"
+        :update="update"
+        @update="(v) => (update = v)"
+      ></Comment>
     </div>
   </div>
 </template>
 <script>
-import Comment from "./Comment.vue";
 import request from "@/utils/request";
+import Comment from "./Comment.vue";
 
 export default {
   name: "Detail",
@@ -40,9 +48,10 @@ export default {
     return {
       info: {},
       commentToSubmit: "",
+      update: false,
     };
   },
-  created() {
+  mounted() {
     this.queryQuestion(this.$route.params.id);
   },
   methods: {
@@ -61,9 +70,16 @@ export default {
           article: this.info.id,
         })
         .then((result) => {
-          this.info = result?.data || {};
+          this.$message.success("评论成功");
+          this.update = true;
         })
-        .catch();
+        .catch((err) => {
+          this.$message.error("评论失败");
+        })
+        .finally(() => {
+          this.commentToSubmit = "";
+          this.queryQuestion(this.info.id);
+        });
     },
     goBack() {
       this.$router.push({ path: `/` });
@@ -93,10 +109,9 @@ export default {
       font-size: 12px;
       color: #999;
     }
-
-    .detail_content {
-      background: rgb(198, 216, 198);
-    }
+  }
+  .detail_content {
+    min-height: 200px;
   }
   .operation {
     display: flex;
