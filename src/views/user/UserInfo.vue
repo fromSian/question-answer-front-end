@@ -94,13 +94,13 @@
           @current-change="
             (page) => {
               this.page = page;
-              queryData(current, page, 2);
+              queryData(current, page);
             }
           "
           @size-change="
             (size) => {
               this.size = size;
-              queryData(current, 1, size);
+              queryData(current, 1);
             }
           "
         >
@@ -182,6 +182,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.pagination {
+  position: absolute;
+  bottom: 0;
+  right: 16px;
+}
 .user_header {
   display: flex;
   justify-content: space-between;

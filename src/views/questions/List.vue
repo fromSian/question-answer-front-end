@@ -1,11 +1,8 @@
 <template>
   <div>
-    <template v-for="item in questions">
+    <template>
       <div
-        v-if="
-          currentTag === '全部' ||
-          (currentTag && item?.tag_list?.includes(currentTag))
-        "
+        v-for="item in questions"
         :key="item.id"
         @click="handleDetail(item.id)"
         class="question_item"
@@ -48,9 +45,35 @@
         </div>
       </div>
     </template>
+    <el-pagination
+      style="float: right; margin-bottom: 16px"
+      background
+      layout="sizes, prev, pager, next"
+      :total="total"
+      :page-sizes="[8, 10, 20, 30, 40]"
+      :page-size="size"
+      :current-page="page"
+      @current-change="
+        (page) => {
+          this.page = page;
+          getList(currentTag, page);
+        }
+      "
+      @size-change="
+        (size) => {
+          this.size = size;
+          getList(currentTag, cur1);
+        }
+      "
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
+//  v-if="
+//           currentTag === '全部' ||
+//           (currentTag && item?.tag_list?.includes(currentTag))
+//         "
 import request from "@/utils/request";
 export default {
   name: "List",
@@ -63,26 +86,34 @@ export default {
   data() {
     return {
       questions: [],
+      size: 8,
+      page: 1,
+      total: 0,
     };
+  },
+  watch: {
+    currentTag(newV, oldV) {
+      this.getList(newV, this.page);
+    },
   },
   mounted() {
     this.getList();
   },
   methods: {
-    getList() {
+    getList(tags = "ALL", page = 1) {
+      if (tags == "全部") {
+        tags = "ALL";
+      }
       request
-        .get("/article/")
+        .get(`/article/?page=${page}&size=${this.size}&tags=${tags}`)
         .then((result) => {
+          this.total = result.data.count;
           this.questions = result?.data?.results || [];
         })
         .catch((err) => {});
     },
     handleDetail(id) {
       this.$router.push({ path: `/questions/${id}` });
-    },
-    showUserDetail(ev, id) {
-      ev.stopPropagation();
-      this.$router.push({ path: `/userinfo/${id}` });
     },
   },
 };
