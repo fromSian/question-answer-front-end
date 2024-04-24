@@ -16,7 +16,8 @@
       >
       <div class="detail_content">
         <div class="detail_content_wrap">
-          <div class="detail_content_item" v-for="data in datas">
+          <el-empty v-if="!datas.length" description="暂无数据"></el-empty>
+          <div v-else class="detail_content_item" v-for="data in datas">
             <div class="detail_content_left">
               <el-tooltip v-if="current == '1'" :content="data.content">
                 <p class="detail_content_item_comment">{{ data.content }}</p>
@@ -39,7 +40,11 @@
                 </p>
               </el-tooltip>
 
-              <el-tooltip v-else :content="data.article.title" placement="top">
+              <el-tooltip
+                v-if="current == '2'"
+                :content="data.article.title"
+                placement="top"
+              >
                 <p
                   @click="handleArticleGo(data.article.id)"
                   style="cursor: pointer"
@@ -86,6 +91,7 @@
         <el-pagination
           class="pagination"
           background
+          v-if="datas.length"
           layout="sizes, prev, pager, next"
           :total="total"
           :page-sizes="[8, 10, 20, 30, 40]"
@@ -232,6 +238,11 @@ export default {
     }
 
     .detail_content_item {
+      height: 60px;
+      padding: 0 16px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       display: flex;
       align-items: center;
       justify-content: space-between;
