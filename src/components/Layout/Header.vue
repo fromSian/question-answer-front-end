@@ -85,13 +85,13 @@ export default {
   created() {},
   methods: {
     async logout() {
-      removeToken()
+      removeToken();
       this.$store.commit("user/SET_TOKEN_STATE", null);
       this.$store.commit("user/SET_USER_STATE", {});
-      this.$message.success('退出登录成功')
+      this.$message.success("退出登录成功");
       setTimeout(() => {
-          this.$router.push({ path: this.redirect || "/" });
-        }, 500);
+        this.$router.push({ path: this.redirect || "/" });
+      }, 500);
     },
     search() {
       if (this.searchKey.trim() === null || this.searchKey.trim() === "") {
@@ -106,17 +106,23 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem('token')) {
-      let cVue = this
-      request.get("/user/info/").then((res) => {
-        if (res && res.data && res.data.status) {
-          cVue.$store.commit("user/SET_USER_STATE", {
-            id: res.data.id,
-            username: res.data.username,
-            coins: res.data.coins,
-          });
-        }
-      });
+    if (localStorage.getItem("token")) {
+      let cVue = this;
+      request
+        .get("/user/info/")
+        .then((res) => {
+          if (res && res.data && res.data.status) {
+            cVue.$store.commit("user/SET_USER_STATE", {
+              id: res.data.id,
+              username: res.data.username,
+              coins: res.data.coins,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$store.commit("user/SET_TOKEN_STATE", null);
+          this.$store.commit("user/SET_USER_STATE", {});
+        });
     }
   },
 };

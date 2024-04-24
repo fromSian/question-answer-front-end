@@ -1,6 +1,7 @@
 <template>
   <div>
-    <template>
+    <el-empty v-if="!questions.length" description="暂无数据"></el-empty>
+    <template v-else>
       <div
         v-for="item in questions"
         :key="item.id"
@@ -46,6 +47,7 @@
       </div>
     </template>
     <el-pagination
+      v-if="questions.length"
       style="float: right; margin-bottom: 16px"
       background
       layout="sizes, prev, pager, next"
@@ -70,10 +72,6 @@
   </div>
 </template>
 <script>
-//  v-if="
-//           currentTag === '全部' ||
-//           (currentTag && item?.tag_list?.includes(currentTag))
-//         "
 import request from "@/utils/request";
 export default {
   name: "List",
