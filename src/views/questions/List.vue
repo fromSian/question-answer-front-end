@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div class="sort">
+      <el-radio-group v-model="sort">
+        <el-radio :label="'-views'">浏览量降序</el-radio>
+        <el-radio :label="'views'">浏览量升序</el-radio>
+        <el-radio :label="'created'">发布时间升序</el-radio>
+        <el-radio :label="'-created'">发布时间降序</el-radio>
+      </el-radio-group>
+    </div>
     <el-empty v-if="!questions.length" description="暂无数据"></el-empty>
     <template v-else>
       <div
@@ -83,6 +91,7 @@ export default {
   },
   data() {
     return {
+      sort: "-views",
       questions: [],
       size: 8,
       page: 1,
@@ -92,6 +101,9 @@ export default {
   watch: {
     currentTag(newV, oldV) {
       this.getList(newV, this.page);
+    },
+    sort() {
+      this.getList(this.currentTag, 1);
     },
   },
   mounted() {
@@ -103,7 +115,9 @@ export default {
         tags = "ALL";
       }
       request
-        .get(`/article/?page=${page}&size=${this.size}&tags=${tags}`)
+        .get(
+          `/article/?page=${page}&size=${this.size}&tags=${tags}&sort=${this.sort}`
+        )
         .then((result) => {
           this.total = result.data.count;
           this.questions = result?.data?.results || [];
@@ -170,6 +184,15 @@ export default {
         color: rgb(22, 94, 153);
       }
     }
+  }
+}
+.sort {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  .el-radio {
+    margin-right: 8px;
   }
 }
 </style>

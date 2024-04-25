@@ -9,7 +9,9 @@
             <span class="questioner">{{ info.author?.username }}</span>
             <span class="create-time">提问于 {{ info.created }}</span>
           </div>
-          <el-button type="danger" size="small" :disabled='!token'>举报</el-button>
+          <el-button type="danger" size="small" :disabled="!token"
+            >举报</el-button
+          >
         </div>
         <div class="detail_content">{{ info.content }}</div>
       </el-card>
@@ -65,7 +67,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user", 'token']),
+    ...mapGetters(["user", "token"]),
   },
   mounted() {
     this.queryQuestion(this.$route.params.id);
@@ -77,6 +79,13 @@ export default {
         .then((result) => {
           this.info = result?.data || {};
         })
+        .catch();
+      this.addView(id);
+    },
+    addView(id) {
+      request
+        .post(`/views/`, { article: id })
+        .then((result) => {})
         .catch();
     },
     submitComment() {
