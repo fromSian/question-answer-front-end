@@ -9,7 +9,7 @@
             <span class="questioner">{{ info.author?.username }}</span>
             <span class="create-time">提问于 {{ info.created }}</span>
           </div>
-          <el-button type="danger" size="small">举报</el-button>
+          <el-button type="danger" size="small" :disabled='!token'>举报</el-button>
         </div>
         <div class="detail_content">{{ info.content }}</div>
       </el-card>
@@ -17,9 +17,13 @@
         <el-input
           type="textarea"
           :rows="3"
-          :disabled="new Date(info.expired) < new Date()"
+          :disabled="
+            !token || (info.expired && new Date(info.expired) < new Date())
+          "
           :placeholder="
-            new Date(info.expired) < new Date()
+            !token
+              ? '请先登录'
+              : info.expired && new Date(info.expired) < new Date()
               ? '已过评论有效时间'
               : '请输入评论内容'
           "
@@ -27,7 +31,9 @@
         >
         </el-input>
         <el-button
-          :disabled="new Date(info.expired) < new Date()"
+          :disabled="
+            !token || (info.expired && new Date(info.expired) < new Date())
+          "
           type="primary"
           @click="submitComment"
           size="small"
@@ -45,6 +51,7 @@
 </template>
 <script>
 import request from "@/utils/request";
+import { mapGetters } from "vuex";
 import Comment from "./Comment.vue";
 
 export default {
@@ -56,6 +63,9 @@ export default {
       commentToSubmit: "",
       update: false,
     };
+  },
+  computed: {
+    ...mapGetters(["user", 'token']),
   },
   mounted() {
     this.queryQuestion(this.$route.params.id);
