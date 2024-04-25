@@ -13,18 +13,24 @@
         </div>
         <div class="detail_content">{{ info.content }}</div>
       </el-card>
-      <div class="operation">
+      <div :class="`operation`">
         <el-input
           type="textarea"
           :rows="3"
-          placeholder="请输入评论内容"
+          :disabled="new Date(info.expired) < new Date()"
+          :placeholder="
+            new Date(info.expired) < new Date()
+              ? '已过评论有效时间'
+              : '请输入评论内容'
+          "
           v-model="commentToSubmit"
         >
         </el-input>
         <el-button
+          :disabled="new Date(info.expired) < new Date()"
           type="primary"
           @click="submitComment"
-          size='small'
+          size="small"
           style="margin-right: 16px"
           >评论</el-button
         >
