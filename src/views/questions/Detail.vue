@@ -30,7 +30,7 @@
             !token
               ? '请先登录'
               : info.expired && new Date(info.expired) < new Date()
-              ? '已过评论有效时间'
+              ? `已过评论有效时间(${info.expired})`
               : '请输入评论内容'
           "
           v-model="commentToSubmit"

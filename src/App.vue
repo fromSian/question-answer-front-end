@@ -27,4 +27,7 @@ export default {
 .el-popconfirm__main {
   margin-bottom: 8px;
 }
+.el-date-table td span {
+  text-align: center;
+}
 </style>
