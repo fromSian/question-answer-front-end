@@ -122,6 +122,7 @@ export default {
         .catch((err) => {
           this.$store.commit("user/SET_TOKEN_STATE", null);
           this.$store.commit("user/SET_USER_STATE", {});
+          removeToken()
         });
     }
   },
