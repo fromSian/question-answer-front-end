@@ -3,7 +3,7 @@
     <el-divider><span style="font-size: 20px">评论详情</span></el-divider>
     <div class="sort">
       <el-radio-group v-model="sort">
-        <el-radio :label="'is_great'">优秀度</el-radio>
+        <el-radio :label="'-is_great'">优秀度</el-radio>
         <el-radio :label="'created'">发布时间升序</el-radio>
         <el-radio :label="'-created'">发布时间降序</el-radio>
       </el-radio-group>
@@ -79,7 +79,7 @@ export default {
   },
   data() {
     return {
-      sort: "is_great",
+      sort: "-is_great",
       comments: [],
       page: 1,
       size: 8,

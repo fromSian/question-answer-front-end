@@ -9,7 +9,11 @@
             <span class="questioner">{{ info.author?.username }}</span>
             <span class="create-time">提问于 {{ info.created }}</span>
           </div>
-          <el-button type="danger" size="small" :disabled="!token"
+          <el-button
+            type="danger"
+            size="small"
+            @click="handleDenounce"
+            :disabled="!token || user?.id === info.author?.id"
             >举报</el-button
           >
         </div>
@@ -87,6 +91,19 @@ export default {
         .post(`/views/`, { article: id })
         .then((result) => {})
         .catch();
+    },
+    handleDenounce() {
+      request
+        .post(`/denounce/`, {
+          article: this.$route.params.id,
+          user: this.user.id,
+        })
+        .then((result) => {
+          this.$message.success("举报成功， 待审核");
+        })
+        .catch((err) => {
+          this.$message.error("举报失败");
+        });
     },
     submitComment() {
       request
