@@ -74,6 +74,10 @@ export default {
     ...mapGetters(["user", "token"]),
   },
   mounted() {
+    window.scroll({
+      top: 0,
+      behavior: "smooth",
+    });
     this.queryQuestion(this.$route.params.id);
   },
   methods: {

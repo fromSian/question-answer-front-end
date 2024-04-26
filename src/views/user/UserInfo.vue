@@ -27,7 +27,7 @@
                 class="detail_content_item_article"
                 @click="handleArticleGo(data.article.id)"
               >
-                {{ data.article.title }}
+                {{ data.article?.title }}
               </p>
 
               <el-tooltip

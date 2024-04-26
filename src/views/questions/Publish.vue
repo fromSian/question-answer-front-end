@@ -118,6 +118,7 @@ export default {
                 this.loading = false;
                 this.$message.success("发布成功");
                 this.resetForm("ruleForm");
+                this.queryTags()
               }
             })
             .catch((err) => {

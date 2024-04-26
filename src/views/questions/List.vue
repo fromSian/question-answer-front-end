@@ -6,6 +6,8 @@
         <el-radio :label="'views'">浏览量升序</el-radio>
         <el-radio :label="'created'">发布时间升序</el-radio>
         <el-radio :label="'-created'">发布时间降序</el-radio>
+        <el-radio :label="'comment'">评论数升序</el-radio>
+        <el-radio :label="'-comment'">评论数降序</el-radio>
       </el-radio-group>
     </div>
     <el-empty v-if="!questions.length" description="暂无数据"></el-empty>
@@ -100,7 +102,7 @@ export default {
   },
   watch: {
     currentTag(newV, oldV) {
-      this.getList(newV, this.page);
+      this.getList(newV, 1);
     },
     sort() {
       this.getList(this.currentTag, 1);
