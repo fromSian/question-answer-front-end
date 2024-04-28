@@ -1,3 +1,4 @@
+<!-- 问题详情页中的评论详情区域 -->
 <template lang="">
   <div class="comments">
     <el-divider><span style="font-size: 20px">评论详情</span></el-divider>
@@ -41,6 +42,7 @@
         <div>{{ comment.content }}</div>
       </el-card>
     </div>
+    <!-- 评论分页组件 -->
     <el-pagination
       style="float: right; margin-bottom: 16px"
       background
@@ -89,6 +91,7 @@ export default {
   },
   computed: {
     ...mapGetters(["user"]),
+    // 是否是提问者
     isQuestioner() {
       return this.user.id === this.questionInfo.author.id;
     },
@@ -110,6 +113,7 @@ export default {
     },
   },
   methods: {
+    // 根据当前问题id，查询其评论列表
     queryComment() {
       if (!this.questionInfo.id) {
         return;
@@ -121,7 +125,9 @@ export default {
         )
         .then((result) => {
           this.loading = false;
+          // 评论总条数
           this.total = result.data.count;
+          // 评论详情列表
           this.comments = result?.data?.results || [];
           this.$emit("update", false);
         })
@@ -129,11 +135,13 @@ export default {
           this.$message.error("查询评论失败");
           this.loading = false;
         });
-    },
+    }, 
+    // 设置优秀作答，只有提问者可以进行操作
     setGreat(id) {
       request
         .post(`/comment/great/`, { comment: id })
         .then((result) => {
+          // 设置成功后，查询评论列表获取最新状态
           this.queryComment();
         })
         .catch();

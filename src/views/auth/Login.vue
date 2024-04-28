@@ -1,3 +1,4 @@
+<!-- 用户登录页面 -->
 <template>
   <div style="width: 50vw; margin-left: 24vw">
     <el-card shadow="never">
@@ -51,6 +52,7 @@ export default {
         username: "",
         password: "",
       },
+      // 表单验证规则，required表示字段是否必填，message表示触发校验时提示的信息，trigger是触发校验的方式
       rules: {
         username: [
           { required: true, message: "请输入账号", trigger: "blur" },
@@ -74,20 +76,24 @@ export default {
     };
   },
   methods: {
+    // 提交登录信息
     submitForm(formName) {
       let cVue = this;
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           cVue.loading = true;
           try {
+            // 将登录信息调用接口传给后端
             const res = await request.post("/user/login/", this.ruleForm);
             if (res && res.data.status) {
               cVue.$message.success("登录成功");
+              // 登录成功后，记录当前登录的用户信息
               cVue.$store.commit("user/SET_USER_STATE", {
                 id: res.data.id,
                 username: res.data.username,
                 coins: res.data.coins,
               });
+              // 记录当前登录的token信息
               cVue.$store.commit("user/SET_TOKEN_STATE", res.data.token);
               setToken(res.data.token);
               setTimeout(() => {
@@ -108,6 +114,7 @@ export default {
         }
       });
     },
+    // 清除当前表单的输入
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },

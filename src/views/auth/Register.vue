@@ -1,3 +1,4 @@
+<!-- 用户注册页面 -->
 <template>
   <div style="width: 50vw; margin-left: 24vw">
     <el-card shadow="never">
@@ -67,6 +68,7 @@ export default {
         checkPass: "",
         username: "",
       },
+      // 表单校验规则，详见Login.vue文件的解释
       rules: {
         username: [
           {
@@ -93,6 +95,7 @@ export default {
     };
   },
   methods: {
+    // 提交注册
     submitForm(formName) {
       let cVue = this;
       this.$refs[formName].validate(async (valid) => {
@@ -123,6 +126,7 @@ export default {
         }
       });
     },
+    // 清除当前表单的输入
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },

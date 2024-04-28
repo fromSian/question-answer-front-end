@@ -1,3 +1,4 @@
+// 路由配置文件，决定不同url跳转至哪个文件写的页面
 import Vue from "vue";
 import VueRouter from "vue-router";
 

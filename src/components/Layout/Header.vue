@@ -1,3 +1,4 @@
+<!-- 问答系统固定头部区域前端页面 -->
 <template>
   <header class="header has-background-white has-text-black">
     <b-navbar class="container is-white" :fixed-top="true">
@@ -12,23 +13,6 @@
       </template>
 
       <template slot="end">
-        <!-- <b-navbar-item tag="div">
-          <b-field position="is-centered">
-            <b-input
-              v-model="searchKey"
-              class="s_input"
-              width="80%"
-              placeholder="请输入关键字"
-              rounded
-              clearable
-              @keyup.enter.native="search()"
-            />
-
-            <p class="control">
-              <b-button class="is-info" @click="search()">检索 </b-button>
-            </p>
-          </b-field>
-        </b-navbar-item> -->
         <b-navbar-item v-if="token">
           <b-button type="primary" tag="router-link" :to="{ path: `/publish` }"
             >发布提问</b-button
@@ -81,10 +65,33 @@ export default {
   computed: {
     ...mapGetters(["token", "user"]),
   },
-  watch: {},
-  created() {},
+  mounted() {
+    if (localStorage.getItem("token")) {
+      let cVue = this; 
+      // 页面初始化的时候调用接口获取用户信息
+      request
+        .get("/user/info/")
+        .then((res) => {
+          if (res && res.data && res.data.status) {
+            // 接口返回后，将获取的信息修改到存储的用户信息中
+            cVue.$store.commit("user/SET_USER_STATE", {
+              id: res.data.id,
+              username: res.data.username,
+              coins: res.data.coins,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$store.commit("user/SET_TOKEN_STATE", null);
+          this.$store.commit("user/SET_USER_STATE", {});
+          removeToken();
+        });
+    }
+  },
   methods: {
+    // 退出登录
     async logout() {
+      // 移除存储的token和用户信息
       removeToken();
       this.$store.commit("user/SET_TOKEN_STATE", null);
       this.$store.commit("user/SET_USER_STATE", {});
@@ -104,27 +111,6 @@ export default {
       }
       this.$router.push({ path: "/?key=" + this.searchKey });
     },
-  },
-  mounted() {
-    if (localStorage.getItem("token")) {
-      let cVue = this;
-      request
-        .get("/user/info/")
-        .then((res) => {
-          if (res && res.data && res.data.status) {
-            cVue.$store.commit("user/SET_USER_STATE", {
-              id: res.data.id,
-              username: res.data.username,
-              coins: res.data.coins,
-            });
-          }
-        })
-        .catch((err) => {
-          this.$store.commit("user/SET_TOKEN_STATE", null);
-          this.$store.commit("user/SET_USER_STATE", {});
-          removeToken()
-        });
-    }
   },
 };
 </script>
